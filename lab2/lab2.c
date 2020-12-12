@@ -19,9 +19,6 @@ typedef struct
 void * tarefa(void *arg){
     tArgs *args = (tArgs *) arg;
     printf("Thread %d\n", args->id);
-    printf("dim = %d", args->dim);
-    double inicio, fim, delta;
-    GET_TIME(inicio);
     for (int i = args->id; i < args->dim; i+=nthreads){
         for (int j = 0; j < args->dim; j++){
             for (int k = 0; k < args->dim; k++){
@@ -29,10 +26,6 @@ void * tarefa(void *arg){
             }
         }
     } 
-    
-    GET_TIME(fim);
-    delta = fim - inicio;
-    printf("O tempo de execução da thread %d foi: %lf\n", args->id, delta);
     pthread_exit(NULL);
 }
 
