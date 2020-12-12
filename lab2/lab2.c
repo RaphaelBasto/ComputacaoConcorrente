@@ -67,30 +67,20 @@ int main(int argc, char* argv[]){
     if(tid==NULL){puts("ERRO--malloc"); return 2;}
     args = (tArgs *) malloc(sizeof(tArgs)*nthreads);
     if(args==NULL){puts("ERRO--malloc"); return 2;}
+
+    for (int i = 0; i < nthreads; i++){
+        (args+i)->id = i;
+        (args+i)->dim = dim;
+        if (pthread_create(tid+i,NULL, tarefa, (void *) (args+i))){
+            puts("ERRO--pthread_create");
+            return 3;
+        }
+    }
     
-    if (nthreads == 1){
-        args->dim = dim;
-        for (int i = 0; i < args->dim; i++){
-            for (int j = 0; j < args->dim; j++){
-                for (int k = 0; k < args->dim; k++){
-                    saida[i*args->dim + j] += mat[j*args->dim + k] * mat2[k*args->dim + j];
-                }
-            }
-        }
+    for(int i = 0; i<nthreads; i++){
+    pthread_join(*(tid+i),NULL);
     }
-    else{
-        for (int i = 0; i < nthreads; i++){
-            (args+i)->id = i;
-            (args+i)->dim = dim;
-            if (pthread_create(tid+1,NULL, tarefa, (void *) (args+i))){
-                puts("ERRO--pthread_create");
-                return 3;
-            }
-        }
-        for(int i = 0; i<nthreads; i++){
-        pthread_join(*(tid+i),NULL);
-        }
-    }
+    
 
     GET_TIME(fimTotal);
     deltaTotal = fimTotal - inicioTotal;
