@@ -4,14 +4,12 @@
 #include<stdlib.h>
 #include<pthread.h>
 #include"timer.h"
-
 //Inicialização de variáveis globais
 long int* vet;
 int nthreads;
 long int tam;
 int trava = 0;
 pthread_mutex_t mutex;
-
 //Função que fará o quicksort
 void quick_sort(long int *a, long int left, long int right) {
     long int i, j, x, y;
@@ -43,7 +41,6 @@ void quick_sort(long int *a, long int left, long int right) {
         quick_sort(a, i, right);
     }
 }
-
 //Função que as threads executarão
 void * tarefa(void *arg){
     int id = (int) arg;
@@ -72,9 +69,9 @@ void * tarefa(void *arg){
 }
 
 int main(int argc, char* argv[]){
-    int quer;
+    char quer;
     printf("Digite 0 para NÃO PRINTAR O VETOR ou digite 1 para PRINTAR O VETOR: ");
-    scanf("%d", quer);
+    scanf("%c", &quer);
     srand(time(NULL));
     pthread_t *tid;
     double inicio, fim, delta, deltaConc;
@@ -101,8 +98,7 @@ int main(int argc, char* argv[]){
     GET_TIME(inicio);
     tid = (pthread_t *) malloc(sizeof(pthread_t)*nthreads);
     if(tid==NULL){puts("ERRO--malloc"); return 2;}
-
-    //Executa as threads
+    //Cria e executa as threads
     for (int i = 0; i < nthreads; i++){
         args[i] = i;
         if (pthread_create(tid+i,NULL, tarefa, (void *) (args[i]))){
@@ -111,7 +107,6 @@ int main(int argc, char* argv[]){
         }
     }
     
-    //Espera as threads terminarem
     for(int i = 0; i<nthreads; i++){
     pthread_join(*(tid+i),NULL);
     }
@@ -121,10 +116,9 @@ int main(int argc, char* argv[]){
     printf("Tempo de concorrente:%lf\n", deltaConc);
 
     GET_TIME(inicio);
-    
-    puts("\n");
     //Caso o usuário queira, printa o vetor já ordenado
-    if (quer==1)
+    puts("\n");
+    if (quer=='1')
     {
         for (long int i = 0; i < tam; i++){
             printf("%ld ", vet[i]);
